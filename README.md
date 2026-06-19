@@ -36,7 +36,7 @@ flowchart TD
 
     D \--\>|completa| I\[retriever.py\\nKeyword matching sobre KB\]
 
-    H \--\> J\[responder.py\\nLLM — claude-haiku-4-5\]
+    H \--\> J\[responder.py\\nLLM — claude-sonnet-4-6\]
 
     I \--\> J
 
@@ -83,7 +83,7 @@ Cuando la consulta es ambigua — "¿qué adhesivo uso?" sin especificar soporte
 | Capa | Tecnología |
 | :---- | :---- |
 | Backend | FastAPI \+ Python |
-| LLM | Claude Haiku (`claude-haiku-4-5`) |
+| LLM | Claude Sonnet (`claude-sonnet-4-6`) |
 | Retrieval | Keyword matching sobre archivos de KB |
 | Frontend | HTML / CSS / JS vanilla |
 | Servidor | Uvicorn |
