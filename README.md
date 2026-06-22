@@ -70,6 +70,12 @@ La base de conocimiento usa productos ficticios, no un catálogo real de proveed
 
 Consultas fuera del dominio de construcción, preguntas sobre precio o disponibilidad, y comparaciones entre productos se resuelven con lógica determinista antes de llegar al retriever. Reduce llamadas innecesarias a la API y hace el sistema más predecible en los límites. Saludos y preguntas de identidad tienen su propia capa anterior al classifier.
 
+### Files API + vision — descartado (KB en texto plano)
+
+Los seis archivos de KB son texto plano puro: no contienen tablas, esquemas visuales, imágenes ni datos no-texto. No hay estructura que se pierda al leerlos con `open().read()`, ni PDFs originales de los que se haya extraído el texto. Migrar a Files API + vision no aportaría valor en este estado de la KB.
+
+Si en el futuro la KB incorpora fichas técnicas en PDF con tablas de rendimiento, diagramas de instalación o datos en formatos no textuales, el punto de migración está marcado en `core/retriever.py` (`_cargar_archivo`).
+
 ### Clarificación como comportamiento de primer nivel
 
 Cuando la consulta es ambigua — "¿qué adhesivo uso?" sin especificar soporte, condiciones o formato — el sistema no adivina ni da una respuesta genérica. Pide la información que necesita. Eso es más útil para el usuario y más honesto sobre los límites del sistema.

@@ -9,7 +9,15 @@ from config import PRODUCTOS_VALIDOS, KB_DIR
 
 
 def _cargar_archivo(nombre_archivo: str) -> str | None:
-    """Carga el contenido del archivo de kb del producto. Devuelve None si no existe."""
+    """Carga el contenido del archivo de kb del producto. Devuelve None si no existe.
+
+    Punto de migración futura — Files API + vision:
+    Si la KB evoluciona a PDFs con tablas, esquemas visuales o datos no-texto,
+    sustituir open().read() por una llamada a client.beta.files.upload() y
+    pasar el file_id en un bloque de documento con cache_control al responder.
+    Los .txt actuales son texto plano puro; no hay estructura perdida que
+    justifique esa migración ahora mismo (evaluado 2026-06-22).
+    """
     ruta = os.path.join(KB_DIR, nombre_archivo)
     if not os.path.exists(ruta):
         return None
