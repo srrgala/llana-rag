@@ -15,12 +15,20 @@ import logging
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from main import procesar_consulta
+
+# ---------------------------------------------------------------------------
+# Rate limiter
+# ---------------------------------------------------------------------------
+limiter = Limiter(key_func=get_remote_address)
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -48,11 +56,20 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None,
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+_ALLOWED_ORIGINS = [
+    "https://technical-assistant-b2b.onrender.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 
@@ -108,7 +125,8 @@ def health() -> dict:
     tags=["Asistente"],
     summary="Procesar consulta técnica",
 )
-def consulta(body: ConsultaRequest) -> ConsultaResponse:
+@limiter.limit("10/minute")
+def consulta(request: Request, body: ConsultaRequest) -> ConsultaResponse:
     """
     Procesa una consulta técnica y devuelve la respuesta del asistente.
 
