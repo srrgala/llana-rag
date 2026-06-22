@@ -181,8 +181,6 @@ Abre `http://localhost:8000`. Frontend y backend servidos por el mismo proceso.
    - **Start command:** `uvicorn api:app --host 0.0.0.0 --port $PORT`
 4. Deploy
 
-**Nota:** el plan gratuito de Render duerme el servicio tras inactividad. El primer request tras un período sin uso puede tardar \~50 segundos en responder.
-
 URL de producción: https://technical-assistant-b2b.onrender.com
 
 ---
